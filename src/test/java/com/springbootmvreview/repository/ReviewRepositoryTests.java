@@ -41,6 +41,7 @@ public class ReviewRepositoryTests {
 
     }
 
+    // 92 번 영화의 review 내용을 출력한다.
     @Test
     public void testGetMovieReviews() {
 
