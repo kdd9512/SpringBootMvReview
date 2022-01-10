@@ -23,7 +23,24 @@
             console.log(files[i]);
             formData.append("uploadFiles", files[i]);
         }
+
+        // ajax 사용하여 upload
+        $.ajax({
+            url: '/uploadAjax',
+            processData: false,
+            contentType: false,
+            data: formData,
+            type: 'POST',
+            dataType: "json",
+            success: function (result) {
+                console.log(result);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(textStatus);
+            }
+        });
     });
+
 </script>
 
 </body>
