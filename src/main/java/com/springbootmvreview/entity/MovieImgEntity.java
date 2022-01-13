@@ -18,6 +18,7 @@ public class MovieImgEntity {
 
     private String uuid;
     private String imgName;
+    private String path;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private MovieEntity movie;
