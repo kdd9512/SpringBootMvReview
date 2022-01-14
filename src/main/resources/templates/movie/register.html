@@ -1,6 +1,34 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
+<style>
+    .uploadResult {
+        width: 100%;
+        background-color: gray;
+        margin-top: 10px;
+    }
+
+    .uploadResult ul {
+        display: flex;
+        flex-flow: row;
+        justify-content: center;
+        align-items: center;
+        vertical-align: top;
+        overflow: auto;
+    }
+
+    .uploadResult ul li {
+        list-style: none;
+        padding: 10px;
+        margin-left: 2em;
+    }
+
+    .uploadResult ul li img {
+        width: 100px;
+    }
+</style>
+
+
 <th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
 
     <th:block th:fragment="content">
@@ -23,10 +51,122 @@
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
 
+            <div class="uploadResult">
+                <ul>
+
+                </ul>
+            </div>
+
         </form>
 
         <script>
             $(document).ready(function (e) {
+
+                let regex = new RegExp("(.*?)\.(exe|sh|zip|alz|tiff)$");
+                let maxSize = 10485760; // 10mb
+
+                function checkExtension(fileName, fileSize) {
+
+                    if (fileSize >= maxSize) {
+                        alert("용량이 너무 큽니다. 제한은 10MB 입니다.");
+                        return false;
+                    }
+
+                    if (regex.test(fileName)) {
+                        alert("업로드 할 수 없는 종류의 파일입니다.");
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                function showResult(uploadResultArr) {
+
+                    let uploadUL = $(".uploadResult ul");
+                    let str = "";
+
+                    $(uploadResultArr).each(function (i, obj) {
+
+                        str += "<li data-name='"+obj.fileName+"' data-path='"+obj.
+                            folderPath+"' data-uuid='"+obj.uuid+"'>";
+                        str +="<div>";
+                        str += "<button type='button' data-file=\'"+obj.imageURL+"\' " +
+                            "class='btn-warning btn-sm'>X</button><br>";
+                        str += "<img src='/display?fileName="+obj.imageURL+"'>";
+                        str +="</div>";
+                        str += "</li>";
+                    });
+                    uploadUL.append(str);
+                }
+
+                $(".custom-file-input").on("change", function () {
+
+                    let fileName = $(this).val().split("\\").pop();
+                    $(this).siblings(".custom-file-label")
+                        .addClass("selected")
+                        .html(fileName);
+
+                    let formData = new FormData();
+                    let inputFile = $(this);
+                    let files = inputFile[0].files;
+                    let appended = false;
+
+                    for (let i = 0; i < files.length; i++) {
+
+                        if (!checkExtension(files[i].name, files[i].size)) {
+                            return false;
+                        }
+
+                        console.log("files : " + files[i]);
+                        formData.append("uploadFiles", files[i]);
+                        appended = true;
+                    }
+
+                    // upload 를 하지 않는다.
+                    if (!appended) {return;}
+
+                    for (let value of formData.values()) {
+                        console.log(value);
+                    }
+
+                    // upload ajax
+                    $.ajax({
+                        url: "/uploadAjax",
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        type: "POST",
+                        dataType: "json",
+                        success: function (result) {
+                            console.log(result);
+                            showResult(result);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.log(textStatus);
+                        }
+                    });
+                });
+
+                $(".uploadResult").on("click", "li button", function (e) {
+
+                    console.log("remove file");
+
+                    let targetFile = $(this).data("file");
+                    let targetLi = $(this).closest("li");
+
+                    console.log(targetFile, targetLi)
+
+                    $.ajax({
+                        url: "/removeFile",
+                        data: {fileName: targetFile},
+                        dataType: 'text',
+                        type: 'POST',
+                        success: function (result) {
+                            alert(result);
+                            targetLi.remove();
+                        }
+                    });
+                });
 
             });
         </script>
