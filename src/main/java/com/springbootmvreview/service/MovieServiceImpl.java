@@ -21,7 +21,7 @@ public class MovieServiceImpl implements MovieService{
     private final MovieRepository movieRepository;
     private final MovieImgRepository imgRepository;
 
-    @Transactional
+//    @Transactional
     @Override
     public Long register(MovieDTO movieDTO) {
 

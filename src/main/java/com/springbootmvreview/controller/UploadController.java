@@ -2,6 +2,7 @@ package com.springbootmvreview.controller;
 
 import com.springbootmvreview.dto.UploadResultDTO;
 import lombok.extern.log4j.Log4j2;
+import net.coobird.thumbnailator.Thumbnailator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -66,7 +68,17 @@ public class UploadController {
 
             try {
                 uploadFile.transferTo(savePath);
+
+                // 섬네일 파일명을 생성.
+                String thumbnailSaveName = uploadPath + File.separator + folderPath +
+                        File.separator + "/s_" + uuid + "_" + fileName; // 이름 중간에 /s_ 가 들어가게 설정.
+
+                // 섬네일 생성. Thumbnailator 이용하여 thumbnail 이미지 파일 생성. 크기는 100 * 100
+                File thumbnailFile = new File(thumbnailSaveName);
+                Thumbnailator.createThumbnail(savePath.toFile(), thumbnailFile, 100, 100);
+
                 resultDTOList.add(new UploadResultDTO(fileName, uuid, folderPath));
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -121,5 +133,26 @@ public class UploadController {
         return result;
     }
 
+    @PostMapping("/removeFile")
+    public ResponseEntity<Boolean> removeFile(String fileName){
+
+        String srcFileName = null;
+
+        try {
+            srcFileName = URLDecoder.decode(fileName, "UTF-8");
+            File file = new File(uploadPath + File.separator + srcFileName);
+            boolean result = file.delete();
+
+            File thumbnail = new File(file.getParent(), "s_" + file.getName());
+            result = thumbnail.delete();
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
 
 }

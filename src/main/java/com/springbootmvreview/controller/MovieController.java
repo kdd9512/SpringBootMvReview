@@ -24,7 +24,6 @@ public class MovieController {
 
     }
 
-    @Transactional
     @PostMapping("/register")
     public String register(MovieDTO movieDTO, RedirectAttributes ra){
 

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <style>
     .uploadResult {
         width: 100%;
@@ -80,25 +79,6 @@
                     return true;
                 }
 
-                function showResult(uploadResultArr) {
-
-                    let uploadUL = $(".uploadResult ul");
-                    let str = "";
-
-                    $(uploadResultArr).each(function (i, obj) {
-
-                        str += "<li data-name='"+obj.fileName+"' data-path='"+obj.
-                            folderPath+"' data-uuid='"+obj.uuid+"'>";
-                        str +="<div>";
-                        str += "<button type='button' data-file=\'"+obj.imageURL+"\' " +
-                            "class='btn-warning btn-sm'>X</button><br>";
-                        str += "<img src='/display?fileName="+obj.imageURL+"'>";
-                        str +="</div>";
-                        str += "</li>";
-                    });
-                    uploadUL.append(str);
-                }
-
                 $(".custom-file-input").on("change", function () {
 
                     let fileName = $(this).val().split("\\").pop();
@@ -147,6 +127,25 @@
                     });
                 });
 
+                function showResult(uploadResultArr) {
+
+                    let uploadUL = $(".uploadResult ul");
+                    let str = "";
+
+                    $(uploadResultArr).each(function (i, obj) {
+                        str += "<li data-name='"+obj.fileName+"' data-path='"+obj.
+                            folderPath+"' data-uuid='"+obj.uuid+"'>";
+                        str +="<div>";
+                        str += "<button type='button' data-file=\'"+obj.imageURL+"\' " +
+                            "class='btn-warning btn-sm'>X</button><br>";
+                        str += "<img src='/display?fileName="+obj.thumbnailURL+"'>";
+                        str +="</div>";
+                        str += "</li>";
+                    });
+
+                    uploadUL.append(str);
+                }
+
                 $(".uploadResult").on("click", "li button", function (e) {
 
                     console.log("remove file");
@@ -154,7 +153,7 @@
                     let targetFile = $(this).data("file");
                     let targetLi = $(this).closest("li");
 
-                    console.log(targetFile, targetLi)
+                    console.log(targetFile)
 
                     $.ajax({
                         url: "/removeFile",
