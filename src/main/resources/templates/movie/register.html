@@ -167,6 +167,30 @@
                     });
                 });
 
+                // prevent submit
+                $(".btn-primary").on("click", function (e) {
+                    e.preventDefault();
+
+                    let str = "";
+
+                    $(".uploadResult li").each(function (i, obj) {
+
+                        let target = $(obj);
+
+                        str += "<input type='hidden' name='imageDTOList["+i+"].imgName' value='"+target.data('name')+"'>";
+                        str += "<input type='hidden' name='imageDTOList["+i+"].path' value='"+target.data('path')+"'>";
+                        str += "<input type='hidden' name='imageDTOList["+i+"].uuid' value='"+target.data('uuid')+"'>";
+
+                    });
+
+                    // 태그 추가 확인 후 comment 를 제거.
+                    $(".box").html(str);
+
+                    // 서버 호출하여 DB 에 등록.
+                    $("form").submit();
+
+                })
+
             });
         </script>
 

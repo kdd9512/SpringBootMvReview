@@ -22,8 +22,10 @@ public interface MovieService {
                 .mno(movieDTO.getMno())
                 .title(movieDTO.getTitle())
                 .build();
+
         entityMap.put("movie", movie);
 
+        // register 에서 입력받아 생성할 hidden 태그들의 name 과 동일해야 한다.
         List<MovieImgDTO> imageDTOList = movieDTO.getImageDTOList();
 
         // MovieImgDTO 처리

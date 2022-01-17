@@ -17,4 +17,9 @@ public class MovieDTO {
     @Builder.Default
     private List<MovieImgDTO> imageDTOList = new ArrayList<>();
 
+    // 영화 평균 평점
+    private double avg;
+
+
+
 }
