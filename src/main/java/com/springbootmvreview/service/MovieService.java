@@ -2,8 +2,11 @@ package com.springbootmvreview.service;
 
 import com.springbootmvreview.dto.MovieDTO;
 import com.springbootmvreview.dto.MovieImgDTO;
+import com.springbootmvreview.dto.PageRequestDTO;
+import com.springbootmvreview.dto.PageResultDTO;
 import com.springbootmvreview.entity.MovieEntity;
 import com.springbootmvreview.entity.MovieImgEntity;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +16,34 @@ import java.util.stream.Collectors;
 public interface MovieService {
 
     Long register(MovieDTO movieDTO);
+
+    PageResultDTO<MovieDTO, Object[]> getList(PageRequestDTO requestDTO);
+
+    default MovieDTO entitiesToDTO(MovieEntity movie, List<MovieImgEntity> movieImages,
+                                   Double avg, Long reviewCnt) {
+
+        MovieDTO movieDTO = MovieDTO.builder()
+                .mno(movie.getMno())
+                .title(movie.getTitle())
+                .regDate(movie.getRegDate())
+                .modDate(movie.getModDate())
+                .build();
+
+        List<MovieImgDTO> movieImgDTOList = movieImages.stream()
+                .map(movieImgEntity -> {
+                    return MovieImgDTO.builder()
+                            .imgName(movieImgEntity.getImgName())
+                            .path(movieImgEntity.getPath())
+                            .uuid(movieImgEntity.getUuid())
+                            .build();
+                }).collect(Collectors.toList());
+
+        movieDTO.setImageDTOList(movieImgDTOList);
+        movieDTO.setAvg(avg);
+        movieDTO.setReviewCnt(reviewCnt.intValue());
+
+        return movieDTO;
+    }
 
     default Map<String, Object> dtoToEntity(MovieDTO movieDTO) { // Map 타입으로 반환.
 

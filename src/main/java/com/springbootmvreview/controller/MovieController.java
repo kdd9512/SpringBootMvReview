@@ -1,10 +1,12 @@
 package com.springbootmvreview.controller;
 
 import com.springbootmvreview.dto.MovieDTO;
+import com.springbootmvreview.dto.PageRequestDTO;
 import com.springbootmvreview.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,4 +37,10 @@ public class MovieController {
 
     }
 
+    @GetMapping("/list")
+    public void list(PageRequestDTO pageRequestDTO, Model model) {
+        log.info("pageRequestDTO : " + pageRequestDTO);
+
+        model.addAttribute("result", movieService.getList(pageRequestDTO));
+    }
 }
