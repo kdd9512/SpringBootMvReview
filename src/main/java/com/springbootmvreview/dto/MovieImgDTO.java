@@ -6,9 +6,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class MovieImgDTO {
 
     private String uuid;

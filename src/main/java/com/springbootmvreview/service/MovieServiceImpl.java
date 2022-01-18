@@ -47,6 +47,7 @@ public class MovieServiceImpl implements MovieService{
 
     @Override
     public PageResultDTO<MovieDTO, Object[]> getList(PageRequestDTO requestDTO) {
+
         Pageable pageable = requestDTO.getPageable(Sort.by("mno").descending());
 
         Page<Object[]> result = movieRepository.getListPage(pageable);
