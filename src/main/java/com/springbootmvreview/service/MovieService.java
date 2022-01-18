@@ -18,6 +18,8 @@ public interface MovieService {
 
     PageResultDTO<MovieDTO, Object[]> getList(PageRequestDTO requestDTO); // 목록 처리
 
+    MovieDTO getMovie(Long mno); // 상세페이지 처리.
+
     default MovieDTO entitiesToDTO(MovieEntity movie, List<MovieImgEntity> movieImages,
                                    Double avg, Long reviewCnt) {
         MovieDTO movieDTO = MovieDTO.builder()
@@ -77,4 +79,6 @@ public interface MovieService {
 
         return entityMap;
     }
+
+
 }
