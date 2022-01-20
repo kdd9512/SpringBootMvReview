@@ -47,7 +47,7 @@
 
         <div class="uploadResult">
             <ul>
-                <li th:each="movieImage: ${dto.imageDTOList}">
+                <li th:each="movieImage: ${dto.imageDTOList}" th:data-file="${movieImage.getThumbnailURL()}">
                     <img th:if="${movieImage.path != null}"
                          th:src="|/display?fileName=${movieImage.getThumbnailURL()}|">
                 </li>
@@ -76,7 +76,6 @@
                     <div class="modal-header">
                         <h5 class="modal-title">Review</h5>
                         <button type="button" class="btn-close closeBtn" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
                         </button>
                     </div><!-- modal header end -->
 
@@ -112,7 +111,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Picture</h5>
-                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="btn-close imgCloseBtn" data-dismiss="modal" aria-label="Close">
                         </button>
                     </div> <!-- modal header end -->
 
@@ -121,7 +120,7 @@
                     </div> <!-- modal body end -->
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary"
+                        <button type="button" class="btn btn-secondary imgCloseBtn"
                                 data-dismiss="modal">Close
                         </button>
                     </div> <!-- modal footer end -->
@@ -150,6 +149,7 @@
                 });
 
                 let reviewModal = $(".reviewModal");
+                let imageModal = $(".imageModal");
                 let inputMid = $("input[name='mid']");
                 let inputText = $("input[name='text']");
 
@@ -284,6 +284,19 @@
 
                 $('.closeBtn').on("click", function () {
                     reviewModal.modal("hide");
+                });
+
+                $('.imgCloseBtn').on("click", function () {
+                    imageModal.modal("hide");
+                });
+
+                $(".uploadResult li").click(function () {
+
+                    let file = $(this).data('file');
+
+                    $('.imageModal .modal-body').html("<img style='width: 100%' src='/display?fileName="+file+"&size=1'>")
+
+                    $('.imageModal').modal("show");
                 })
 
             });
